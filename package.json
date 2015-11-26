@@ -1,0 +1,29 @@
+{
+  "name": "newton",
+  "version": "1.0.0",
+  "description": "9wonder(第9奇迹)团队使用的前端编译工具，主要负责把代码处理后，生成线上环境代码，以保证资源的优化加载、缓存，加速页面展示。",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inagora/newton.git"
+  },
+  "keywords": [
+    "fe",
+    "tools",
+    "compress",
+    "wpo"
+  ],
+  "author": "poker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/inagora/newton/issues"
+  },
+  "homepage": "https://github.com/inagora/newton#readme",
+  "dependencies": {
+    "clean-css": "^3.4.8",
+    "uglify-js": "^2.6.1"
+  }
+}
