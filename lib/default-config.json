@@ -1,0 +1,10 @@
+{
+	"cssCompress": true,
+	"datauri": true,
+	"datauriMaxSize": 1024,
+	"jsCompress": true,
+	"jsCompressExclude": "js/dist",
+	"webpack": true,
+	"staticToCdn": true,
+	"dirs":[]
+}
