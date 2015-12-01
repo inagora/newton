@@ -6,5 +6,5 @@
 	"jsCompressExclude": "js/dist",
 	"webpack": true,
 	"staticToCdn": true,
-	"dirs":[]
+	"app":[]
 }
