@@ -1,4 +1,5 @@
 {
+	"tplExt":"tpl",
 	"cssCompress": true,
 	"datauri": true,
 	"datauriMaxSize": 1024,
@@ -6,5 +7,6 @@
 	"jsCompressExclude": "js/dist",
 	"webpack": true,
 	"staticToCdn": true,
+	"relativeTo": "/resource/",
 	"app":[]
 }

@@ -33,35 +33,64 @@ if(!Array.isArray(gConf.app))
 
 
 global.gCompileRoot = path.join('/tmp/newton/'+gConf.project+'-'+util.now('-'));
-util.mkdir(gCompileRoot, true);
+global.gCompileSrcRoot = path.join(global.gCompileRoot, 'src');
+util.mkdir(gCompileSrcRoot, true);
+global.gCdnRoot = path.join(global.gCompileRoot, 'cdn');
+util.mkdir(gCdnRoot, true);
 global.gLog = require('./lib/log')(gCompileRoot);
 
 /**
- * 拷贝文件到/tmp/newton/{project}下，准备编译
+ * 拷贝文件到/tmp/newton/{project}/src下，准备编译
  */
 if(gConf.app.length<=0){
-	gLog.warning('因为没有配置app,直接通出');
+	gLog.warning('因为没有配置应用,直接通出');
 	return;
 }
 gConf.app.forEach(function(appConf){
 	appConf = util.extend(appConf, gConf, false);
 	if(appConf.tpl){
-		util.mkdir(appConf.tpl, gCompileRoot, true);
-		cp.execSync('cp -R '+path.join(gRoot, appConf.tpl,'/')+'* '+path.join(gCompileRoot, appConf.tpl, '/'))
+		util.mkdir(appConf.tpl, gCompileSrcRoot, true);
+		cp.execSync(
+			'cp -R '
+			+path.join(gRoot, appConf.tpl,'/')
+			+'* '
+			+path.join(gCompileSrcRoot, appConf.tpl, '/')
+		)
 	}
 	if(appConf.res){
-		util.mkdir(appConf.res, gCompileRoot, true);
-		cp.execSync('cp -R '+path.join(gRoot, appConf.res,'/')+'* '+path.join(gCompileRoot, appConf.res, '/'))
+		util.mkdir(appConf.res, gCompileSrcRoot, true);
+		cp.execSync(
+			'cp -R '
+			+path.join(gRoot, appConf.res,'/')
+			+'* '
+			+path.join(gCompileSrcRoot, appConf.res, '/')
+		)
 	}
+	util.mkdir(appConf.project, gCdnRoot);
+	appConf.cdnCache = {};
+	if(appConf.cdnDomain){
+		var domain = appConf.cdnDomain;
+		if(!/^http/.test(domain)){
+			domain = 'http://'+domain;
+		}
+		domain = domain.replace(/\/+$/,'');
+		appConf.cdnDomain = domain;
+	}
+	if(appConf.relativeTo)
+		appConf.relativeTo = path.join('/', appConf.relativeTo, '/');
 });
 
 /**
  * 执行各个编译任务
  */
 var jobs = [
-	//'webpack',
-//'jsCompress', 
-'cssCompress']//, 'staticToCdn'];
+	'img2cdn'/*,
+	'webpack',
+'jsCompress', 
+'cssCompress', 
+	'js2cdn',
+	'css2cdn'*/
+];
 var jobName,
 	startTime;
 function executeJob(){
