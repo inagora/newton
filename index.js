@@ -97,28 +97,39 @@ var jobName,
 	startTime;
 function executeJob(){
 	if(jobs.length>0){
-		jobName = jobs.shift();
-		gLog('Newton: 开始执行任务：'+jobName);
-		startTime = new Date();
-		require('./lib/job/'+jobName).run().then(function(data){
-			gLog('Newton: 任务执行完成：'+jobName+', 共耗时：'+util.timeFormat(new Date - startTime));
-			executeJob();
-		}, function(data){
-			gLog.error('Newton: 任务执行失败：'+jobName);
-			if(data){
-				data = typeof data=='string' ? data: JSON.stringify(data);
-				gLog.error(data);
-			}
-		}).catch(function(e){
-			gLog.error('Newton: 任务执行出现意外：'+jobName);
-			console.log(e, e.line);
-		});
+		try{
+			jobName = jobs.shift();
+			gLog('Newton: 开始执行任务 - '+jobName);
+			startTime = new Date();
+			require('./lib/job/'+jobName).run().then(function(data){
+				gLog('Newton: 任务执行完成 - '+jobName+', 共耗时：'+util.timeFormat(new Date - startTime));
+				executeJob();
+			}, function(data){
+				gLog.error('Newton: 任务执行失败 - '+jobName);
+				if(data){
+					data = typeof data=='string' ? data: JSON.stringify(data);
+					gLog.error(data);
+					checkExecuteError();
+				}
+			}).catch(function(e){
+				gLog.error('Newton: 任务执行出现意外 - '+jobName);
+				console.log(e, e.line);
+				checkExecuteError();
+			});
+		}catch(e){
+			gLog.error(e.message);
+			console.log(e.stack);
+			checkExecuteError();
+		}
 	}else{
 		gLog('NT编译完成');
-		if(gLog.haveError()){
-			let fd = fs.openSync(path.join(gRoot,'newton-error-log'), 'w');
-			fs.closeSync(fd);
-		}
+		checkExecuteError();
+	}
+}
+function checkExecuteError(){
+	if(gLog.haveError()){
+		let fd = fs.openSync(path.join(gRoot,'newton-error-log'), 'w');
+		fs.closeSync(fd);
 	}
 }
 executeJob();

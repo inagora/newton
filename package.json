@@ -24,6 +24,7 @@
   "homepage": "https://github.com/inagora/newton#readme",
   "dependencies": {
     "clean-css": "^3.4.8",
+    "colors": "^1.1.2",
     "css-loader": "^0.23.0",
     "html-minify-loader": "^1.0.0",
     "raw-loader": "^0.5.1",
