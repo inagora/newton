@@ -4,6 +4,7 @@
  */
 const process = require('process');
 const cp = require('child_process');
+const fs = require('fs');
 const path = require('path');
 const util = require('./lib/util');
 
@@ -114,6 +115,10 @@ function executeJob(){
 		});
 	}else{
 		gLog('NT编译完成');
+		if(gLog.haveError()){
+			let fd = fs.openSync(path.join(gRoot,'newton-error-log'), 'w');
+			fs.closeSync(fd);
+		}
 	}
 }
 executeJob();
