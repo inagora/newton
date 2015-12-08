@@ -84,13 +84,15 @@ gConf.app.forEach(function(appConf){
  * 执行各个编译任务
  */
 var jobs = [
-	'img2cdn'/*,
+	'img2cdn',
 	'webpack',
-'jsCompress', 
-'cssCompress', 
+	'jsCompress', 
+	'cssCompress', 
 	'js2cdn',
-	'css2cdn'*/
+	'css2cdn',
+	'cdnUpload'
 ];
+jobs = jobs.map(jobName=>({name:jobName, module:''}));
 var jobName,
 	startTime;
 function executeJob(){
