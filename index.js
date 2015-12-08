@@ -92,7 +92,6 @@ var jobs = [
 	'css2cdn',
 	'cdnUpload'
 ];
-jobs = jobs.map(jobName=>({name:jobName, module:''}));
 var jobName,
 	startTime;
 function executeJob(){
