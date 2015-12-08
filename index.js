@@ -24,7 +24,7 @@ try{
 	conf = require(gRoot+'/newton.config.json');
 }catch(e){
 	gLog.error(JSON.stringify(e));
-	return;
+	return 1;
 	conf = {};
 }
 global.gConf = util.extend(require('./lib/default-config.json'), conf);
