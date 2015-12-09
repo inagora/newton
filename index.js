@@ -12,10 +12,17 @@ const util = require('./lib/util');
  * 全局环境和变量初始化
  */
 global.gRoot = process.argv[2];
+global.gCompileType = process.argv.length>=3 ? process.argv[3] : 'normal';
 global.gOutput = gRoot+'/output';
+//通过错误文件形式标记错误
+function markError(){
+	let fd = fs.openSync(path.join(gRoot,'newton-error-log'), 'w');
+	fs.closeSync(fd);
+}
 
 if(!gRoot){
 	console.log('源代码路径：'+gRoot+'不存在！');
+	markError();
 	return;
 }
 util.mkdir(gOutput, true);
@@ -24,9 +31,9 @@ var conf;
 try{
 	conf = require(gRoot+'/newton.config.json');
 }catch(e){
-	gLog.error(JSON.stringify(e));
+	console.error(e.message);
+	markError();
 	return 1;
-	conf = {};
 }
 global.gConf = util.extend(require('./lib/default-config.json'), conf);
 if(!Array.isArray(gConf.app))
@@ -84,6 +91,7 @@ gConf.app.forEach(function(appConf){
 /**
  * 执行各个编译任务
  */
+gLog.log('=============== Newton编译系统 ============');
 var jobs = [
 	'img2cdn',
 	'webpack',
@@ -99,37 +107,35 @@ function executeJob(){
 	if(jobs.length>0){
 		try{
 			jobName = jobs.shift();
-			gLog('Newton: 开始执行任务 - '+jobName);
+			gLog('开始执行任务 - '+jobName);
 			startTime = new Date();
 			require('./lib/job/'+jobName).run().then(function(data){
-				gLog('Newton: 任务执行完成 - '+jobName+', 共耗时：'+util.timeFormat(new Date - startTime));
+				gLog('任务执行完成 - '+jobName+', 共耗时：'+util.timeFormat(new Date - startTime));
 				executeJob();
 			}, function(data){
-				gLog.error('Newton: 任务执行失败 - '+jobName);
+				gLog.error('任务执行失败 - '+jobName);
 				if(data){
 					data = typeof data=='string' ? data: JSON.stringify(data);
 					gLog.error(data);
-					checkExecuteError();
+					markError();
 				}
 			}).catch(function(e){
-				gLog.error('Newton: 任务执行出现意外 - '+jobName);
-				console.log(e, e.line);
-				checkExecuteError();
+				gLog.error('任务执行出现意外 - '+jobName);
+				gLog.error(e.message);
+				markError();
 			});
 		}catch(e){
 			gLog.error(e.message);
-			console.log(e.stack);
-			checkExecuteError();
+			markError();
 		}
 	}else{
-		gLog('NT编译完成');
+		gLog.log('=============== Newton编译完成 ============');
 		checkExecuteError();
 	}
 }
 function checkExecuteError(){
 	if(gLog.haveError()){
-		let fd = fs.openSync(path.join(gRoot,'newton-error-log'), 'w');
-		fs.closeSync(fd);
+		markError();
 	}
 }
 executeJob();
