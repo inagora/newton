@@ -39,8 +39,9 @@ global.gConf = util.extend(require('./lib/default-config.json'), conf);
 if(!Array.isArray(gConf.app))
 	gConf.app = [gConf.app];
 
-
-global.gCompileRoot = path.join('/tmp/newton/'+gConf.project+'-'+util.now('-'));
+const USER_HOME = process.env.HOME;
+global.gBuildDir = path.join(USER_HOME, '/newton_build');
+global.gCompileRoot = path.join( gBuildDir, gConf.project+'-'+util.now('-'));
 global.gCompileSrcRoot = path.join(global.gCompileRoot, 'src');
 util.mkdir(gCompileSrcRoot, true);
 global.gCdnRoot = path.join(global.gCompileRoot, 'cdn');
@@ -75,7 +76,16 @@ gConf.app.forEach(function(appConf){
 		)
 	}
 	util.mkdir(appConf.project, gCdnRoot);
-	appConf.cdnCache = {};
+	if(appConf.cdnCache){
+		try{
+			var cacheStr = fs.readFileSync(path.join(gBuildDir,appConf.project+'_cdn_cache.json'),{encoding:'utf8'});
+			appConf.cdnCache = JSON.parse(cacheStr);
+		}catch(e){
+			gLog.warn('读取cdn上线缓存失败');
+			appConf.cdnCache = {};
+		}
+	}else
+		appConf.cdnCache = {};
 	if(appConf.cdnDomain){
 		var domain = appConf.cdnDomain;
 		if(!/^http/.test(domain)){
@@ -99,7 +109,7 @@ var jobs = [
 	'cssCompress', 
 	'js2cdn',
 	'css2cdn',
-	'cdnUpload',
+	//'cdnUpload',
 	'afterCompile'
 ];
 var jobName,

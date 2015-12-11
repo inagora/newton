@@ -8,5 +8,6 @@
 	"webpack": true,
 	"staticToCdn": true,
 	"relativeTo": "/resource/",
+	"cdnCache":true,
 	"app":[]
 }
