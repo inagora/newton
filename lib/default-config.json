@@ -9,5 +9,6 @@
 	"staticToCdn": true,
 	"relativeTo": "/resource/",
 	"cdnCache":true,
+	"autoPrefix": true,
 	"app":[]
 }

@@ -105,7 +105,8 @@ gLog.log('=============== Newton编译系统 ============');
 var jobs = [
 	'img2cdn',
 	'webpack',
-	'jsCompress', 
+	'jsCompress',
+	'cssPrefix',
 	'cssCompress', 
 	'js2cdn',
 	'css2cdn',
