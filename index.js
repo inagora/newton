@@ -110,7 +110,7 @@ var jobs = [
 	'cssCompress', 
 	'js2cdn',
 	'css2cdn',
-	//'cdnUpload',
+	'cdnUpload',
 	'afterCompile'
 ];
 var jobName,
