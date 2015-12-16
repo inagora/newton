@@ -29,6 +29,7 @@
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
+    "base64-loader": "^1.0.0",
     "clean-css": "^3.4.8",
     "colors": "^1.1.2",
     "css-loader": "^0.23.0",
